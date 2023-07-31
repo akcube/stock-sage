@@ -1,3 +1,8 @@
+# PROJECT GITIGNORE ===========================================================
+data/
+error_log.txt
+
+# PYTHON GITIGNORE ============================================================
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
