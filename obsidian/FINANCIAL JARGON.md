@@ -1,3 +1,7 @@
+---
+tags:
+  - Finance
+---
 # JARGON
 #### ALPHA
 #### ASSET
