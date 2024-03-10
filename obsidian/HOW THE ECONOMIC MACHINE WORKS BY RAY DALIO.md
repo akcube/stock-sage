@@ -168,3 +168,7 @@ Eventually, incomes increase, people become credit worthy and we enter the expan
 	-> This makes you unmotivated and non-competitive if you don't have a reason to keep pushing yourself. 
 3. Do all that you can to raise your productivity. 
 	-> Fairly obvious again, raising productivity is what let's you increase income in the long run and let you handle the debt repayments caused by your past-self borrowing money from you on the trust that his future self would have much higher income and buying power. 
+
+Resources referred to:
+1. [How The Economic Machine Works by Ray Dalio](https://www.youtube.com/@principlesbyraydalio)
+2. [Investopedia](https://www.investopedia.com/)
