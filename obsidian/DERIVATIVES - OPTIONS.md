@@ -71,7 +71,73 @@ Imagine you're a big believer in HDFC Bank's long-term prospects, but you're wor
 	Thankfully, the market remains stable, and HDFC Bank's share price even goes up to ₹2800. In this case, you wouldn't exercise the put option since you can sell your shares at a higher price in the open market. The put option would simply expire, and you would lose the initial premium of ₹5000. But that's a small price to pay for the security the put option provided during those nervous market moments.
 ##### KEY TAKEAWAY
 Options offer a flexible way to hedge your stock portfolio. While they won't completely eliminate risk, they can act as a safety net to minimize your losses in case the stock price takes a tumble. Think of it as setting a stop loss on your stock investments that you know you're guaranteed to bottom out at and you pay the insurance cost upfront. 
+# SETTLEMENT METHODS
+This is an exchange specific problem, but different exchanges tackle the method of future / option contract settlement in different ways. The two ways of dealing with this implementation detail are **cash settlement** and **physical delivery**.
+## CASH SETTLEMENT
+Cash settlement simplifies stock option contracts in India by eliminating the physical delivery of shares. 
+
+>A **cash settlement** is a settlement method used in certain futures and options contracts where, upon expiration or exercise, the seller of the financial instrument does not deliver the actual (physical) underlying asset but instead transfers the associated cash position. - [Cash Settlement - Investopedia](https://www.investopedia.com/terms/c/cashsettlement.asp)
+
+Imagine you believe RIL's share price will fall and decide to go short on a call option contract for 100 shares. Traditionally, exercising this option would require you to purchase those 100 shares on contract expiry. With cash settlement, you only deal with the price difference at expiry.
+
+- **Profit Scenario:** Let's say you entered the contract when RIL was trading at ₹2,500 per share, with the contract quoting a predetermined purchase price of ₹2,800 per share. If the share price plummets to ₹2,000 at expiry, **the seller wouldn't have to arrange funds for the unwanted shares**. Instead, the long position (who bet on the price going up) would simply credit you with the difference – (₹2,800 - ₹2,000) $\times$ 100 shares = ₹30,000.
+- **Loss Scenario:** Conversely, if RIL's share price skyrockets to ₹3,500, you wouldn't have to buy 100 shares at ₹3,500 either. You can just pay the difference: ₹70,000. 
+
+It eliminates the hassle of physical share delivery, focusing solely on the price differential at expiry. This translates to a more efficient and safer market for stock exchanges as the risk they have to take up is less. Since the one taking the loss side of the trade doesn't need to have assets to buy the entire underlying stock and just needs to pay the difference, which is often much cheaper in comparison.
+
+## PHYSICAL DELIVERY
+Physical delivery in stock options is the traditional method where the underlying shares are physically exchanged upon expiry. While cash settlement simplifies things, physical delivery offers a different experience. Physical delivery adds an extra layer of complexity compared to cash settlement. It requires managing the logistics of share certificates and potential delivery costs.
+
+The Indian National Stock Exchange (since July 2018 expiry contracts), uses physical delivery as the mode of settlement of futures contracts. 
+
+>As stated in this [SEBI circular](https://www.sebi.gov.in/legal/circulars/apr-2018/review-of-framework-for-stocks-in-derivatives-segment_38629.html), starting from July 2018 expiry, F&O positions are being settled moved from cash settlement mode to compulsory physical delivery settlement in a phased manner. Starting from October 2019 expiry, all stock F&O contracts will be compulsorily physically settled. If you hold a position in any Stock F&O contract, at expiry, you will be required to give/take delivery of stocks. 
+>
+>- **In the money contracts (ITM)**
+>	All ITM contracts which aren’t CTM will be mandatorily exercised by the exchange. This means that anyone holding an ITM option contract will receive/give delivery of stocks depending on whether one is holding call/put options. All the costs arising out of this delivery obligation will be applied to the client’s account.
+>
+>- **Out of the money contracts (OTM)**
+>	All OTM options will expire worthless. There will be no delivery obligations arising out of this.
+>
+>**Spread and covered contracts**
+>	Spread contracts that result in both – take and give delivery obligation will be netted off for the client. For example, you have a bull call spread of Reliance of the same expiry, a lot of long call options of strike 1300 and a lot of short call options of strike 1320 and the spot expires at 1330, this will result in a net-off and there won’t be any delivery obligation.
+>	
+>- [Policy on settlement of compulsory delivery derivative contracts — Update Oct 2019 - Zerodha](https://zerodha.com/z-connect/general/policy-on-settlement-of-compulsory-delivery-derivative-contracts-update-oct-2019)
+>
+>Physical delivery of stock options can potentially lead to systemic risk in the capital markets and pose a risk to traders. 
+>
+>**The physical delivery risk**
+>	Like I mentioned earlier, if you hold stock futures or any in the money stock option at the close of expiry, you are assigned to give or take delivery of the entire contract value worth of stocks. Since the risk goes up with respect to the client not having enough cash to take delivery or stock to give delivery, the margins required to hold a future or short option position goes up as we get closer to expiry. Margins required are a minimum of 40% of the contract value for futures on the last day of expiry. For in the money long or buy option positions, a delivery margin is assigned from 4 days before expiry. The margins for in the money long options [go up from 10% to 50% of contract value](https://support.zerodha.com/category/trading-and-markets/margin-leverage-and-product-and-order-types/articles/policy-on-physical-settlement)—50% on the last two days of expiry. If the customer doesn’t have sufficient funds or stocks to give or take delivery, the broker squares off the contract. If the customer shows an intent to hold after the higher margin is blocked, it shows an intent to give or take delivery. 
+>	
+>	The risk though comes from out of the money options that suddenly turn in the money on the last day of expiry. No additional margins are blocked for OTM options in the expiry week, and when it suddenly turns in the money, a customer with small amounts of premium and no margin can get assigned to give or take large delivery positions, causing significant risk to the trader and the brokerage firm.
+>	
+>- [Physical delivery of stock F&O & their risks - Zerodha](https://zerodha.com/z-connect/general/physical-delivery-of-stock-fo-their-risks)
+
+### A CASE STUDY ON THE RISK INVOLVED IN PHYSICAL DELIVERY SETTLEMENT
+>This happened on Dec expiry, Thursday 30th Dec 2021. Shares of Hindalco closed at Rs 449.65 at expiry. This meant that the Hindalco 450 PE expired just in the money by 35 paise. This meant that everyone who had bought this 450 PE and held it at the expiry was required to deliver Hindalco stock—1075 shares for every 1 lot of Hindalco held. 
+>
+>This is what happened to Hindalco shares on 30th Dec:
+>
+>![[Pasted image 20240312051304.png]]
+>
+>The stock was above Rs 450 for most of the expiry day and even a few days prior to it. Since it was out of money, no additional physical margins would have been charged, and everyone holding this strike would have assumed that it would expire out of the money. In all likelihood, everyone who held this put option would have written off the trade as a loss and assumed that the maximum loss would be limited to the premium paid. 
+>
+>So at 3 pm, when the Hindalco stock price went below 450, this was how the marketdepth looked like. Those who realized that this option would expire in the money trying to exit, but with no buyers to be able to do so even at Rs 0.05 when the intrinsic value of the strike was Rs 0.35.
+>
+>Everyone holding long puts would have been forced assigned to deliver Hindalco shares. 1 lot of Hindalco = 1075 shares = ~Rs 5lks contract value. Customers who had bought put options with a few thousand rupees were potentially required to deliver tens of lakhs of Hindalco stock. Failing to deliver would have meant short delivery. The [consequences of short delivery](https://support.zerodha.com/category/trading-and-markets/trading-faqs/general/articles/what-is-short-delivery-and-what-are-its-consequences) are losses in terms of auction penalty, apart from the market risk of Hindalco stock price going up from the close of expiry to the auction date. Hindalco stock was up 5% already on Friday, and the auction happens on T+3 days or on Tuesday, and assuming the stock price doesn’t go up further, that is still a whopping loss of Rs 25 (5% of Hindalco) for Rs 0.35 worth of premium at market close. 
+>
+>If this wasn’t puts but calls, there wouldn’t be a short delivery risk, but there would still be a market risk that the customer would be exposed to from the close of expiry to when the customer can sell the stock. But in case of buy delivery (Buy futures, buy calls, short puts), the stock can be sold the next day itself and hence there is no marked to market risk of 3 days. The risk is exponentially more in the case of F&O positions that can lead to short delivery (Short futures, sell calls, buy puts). 
+>
+>The risk exists with futures, short options, and buy ITM options as well. But since there are sufficient margins that also go up closer to expiry, a customer who provides additional margin is willingly holding the position, or else the position is squared off. Because there are no additional physical delivery margins for OTM options and because most option buyers think that when they buy options the maximum they can lose is equal to the premium paid and take no action, the risks go up for the entire ecosystem.
+>
+>Apart from the risk to the trader, this can be a systemic issue because if a customer account goes into debit, the liability falls on the broker. A large individual trader or group of customers of a broker could potentially go into a large enough debit to bankrupt the brokerage firm and, in turn, put the risk on other customers as well. Stocks can move drastically on expiry day, and out of the money, option contracts can suddenly move just in the money with no liquidity to exit, making it impossible for brokerage risk management teams to do anything. All option contracts are settled based on the last 30 min average price of the underlying stock and not the last traded price, making this even trickier without knowing if a CTM option strike will actually close in the money or not until post the market closing. And like I explained earlier, the risk is not just in terms of the auction and short delivery, but also marked to market risk for 3 days.
+>
+>Forcing traders to give or take large delivery positions can potentially be misused by large traders or operators wanting to manipulate the price movement of stocks.
+>- [Physical delivery of stock F&O & their risks](https://zerodha.com/z-connect/general/physical-delivery-of-stock-fo-their-risks)
 
 Resources referred to: 
 1. [The Trillion Dollar Equation](https://www.youtube.com/@veritasium)
 2. [What is Zerodha's policy on the physical settlement of equity derivatives on expiry?](https://support.zerodha.com/category/trading-and-markets/margins/margin-leverage-and-product-and-order-types/articles/policy-on-physical-settlement)
+3. [Cash Settlement - Investopedia](https://www.investopedia.com/terms/c/cashsettlement.asp)
+4. [Physical Delivery - Investopedia](https://www.investopedia.com/terms/p/physicaldelivery.asp)
+5. [Policy on settlement of compulsory delivery derivative contracts — Update Oct 2019 - Zerodha](https://zerodha.com/z-connect/general/policy-on-settlement-of-compulsory-delivery-derivative-contracts-update-oct-2019)
+6. [Physical delivery of stock F&O & their risks - Zerodha](https://zerodha.com/z-connect/general/physical-delivery-of-stock-fo-their-risks)
