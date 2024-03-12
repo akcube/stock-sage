@@ -124,3 +124,153 @@ $$
 A closed form equation for pricing a call option given the current asset price $F_0$, the strike price $K$, the volatility $\sigma$ and the time to maturity $T$ of the option!
 
 We can similarly use the Bachelier model to price all other kinds of future contracts, including put options, call / put futures, etc. 
+
+# PHASE 1.5 - BROWNIAN MOTION $B_t$ (WIENER PROCESS)
+
+>So Brown discovered that any particles, if they were small enough, exhibited this random movement, which came to be known as Brownian motion. But what caused it remained a mystery. 80 years later in 1905, Einstein figured out the answer. Over the previous couple hundred years, the idea that gases and liquids were made up of molecules became more and more popular. But not everyone was convinced that molecules were real in a physical sense. Just that the theory explained a lot of observations. The idea led Einstein to hypothesize that Brownian motion is caused by the trillions of molecules hitting the particle from every direction, every instant. Occasionally, more will hit from one side than the other, and the particle will momentarily jump. To derive the mathematics, Einstein supposed that as an observer we can't see or predict these collisions with any certainty. So at any time we have to assume that the particle is just as likely to move in one direction as an another. So just like stock prices, microscopic particles move like a ball falling down a galton board, the expected location of a particle is described by a normal distribution, which broadens with time. It's why even in completely still water, microscopic particles spread out. This is diffusion. By solving the Brownian motion mystery. Einstein had found definitive evidence that atoms and molecules exist. Of course, he had no idea that Bachelier had uncovered the random walk five years earlier. - [The Trillion Dollar Equation](https://www.youtube.com/watch?v=A5w-dEgIU1M&t=148s)
+
+The random walk that Bachelier came up with and the Brownian motion that Robert Brown discovered are both pretty similar and following the developments that occurred in mathematically developing Brownian motion will help us understand more complex future contracts pricing models. 
+
+> **Definition**: A *standard (one-dimensional)*  *Brownian Motion* (also called *Wiener Process*) is a stochastic process $\{W_t\}_{t \geq 0+}$ indexed by non-negative real numbers $t$ with the following properties:
+>1. $W_0 = 0$.
+>2. With probability 1, the function $t \to W_t$ is continuous in $t$. 
+>3. The process $\{W_t\}_{t \geq 0+}$ has *stationary, independent increments*.
+>4. The increment $W_{t+s} - W_s$ has the $\text{NORMAL}(0, t)$ distribution
+>   - [BROWNIAN MOTION - Galton UChicago](https://galton.uchicago.edu/~lalley/Courses/313/BrownianMotionCurrent.pdf)
+
+I'll explain these properties in more details below. Let's call them the axioms that govern all Wiener processes / Brownian motion. 
+## AXIOMS
+1. **Brownian Motion has independent increments.** 
+	Say we have a time value $r$, $s$ and $t$. We have some Brownian motion associated with each of these time values. The time from $s \to t$ is an increment. So is the time from $r \to s$. We're essentially saying that the increment from $s \to t$ is **totally** independent of other time periods, not even the previous $r \to s$ time period. In short, this axiom essentially says that whatever happens in any given time period is **totally random** and does not depend on what happens in any other time period. 
+	
+	![[Pasted image 20240312084016.png]]
+2. **Brownian Motion has stationary increments.**
+	It's sort of related to the previous axiom. But what it essentially says that the distirbution in the time between $s \to t$ only depends on the time values $t$ and $s$ and nothing else. 
+3. **Brownian Motion has Normal Distribution.** 
+   If we look at the distribution in any time-step, the data points will be normally distributed. That is:
+   $$
+	B_t - B_s \sim N(\mu(t - s), \sigma^2(t-s))
+	$$
+	Here, the term $\mu (t-s)$ is the **mean** of the normal distribution. This term is also often called **drift**. The $\sigma^2(t-s)$ term is the **variance** of the normal distribution. $\sigma$ is just the standard deviation.
+4. **Brownian Motion has continuous sample paths**.
+	This simply just means that at any time value, the Brownian motion graph is continuous at all points. 
+### STANDARD BROWNIAN MOTION
+Standard Brownian Motion is a specialized case of Brownian Motion. It is the case that Bachelier studied and used to model future stock prices in his PhD Thesis. Here, Brownian motion has a **standard normal distribution**. A standard normal distribution has mean $(\mu) = 0$ and variance $\sigma^2 = 1$.  
+$$
+B_t - B_s \sim N(0, t-s)
+$$
+## RANDOM WALKS
+A **symmetric** random walk is a mathematical model that describes a path consisting of a series of random steps, where each step has an equal probability of being taken in either direction. We will limit our discussion to **symmetric** random walks. Here symmetric just means that the probability of each step being chosen is equal. 
+
+Let $S_n$ denote the position of the walker after $n$ steps. Then, a symmetric random walk can be defined recursively as: $$ X_n = X_{n-1} + Z_n$$
+Here, $Z_n$ are independent and identically distributed random variables taking values $+1$ or $-1$ with equal probability, i.e., $P(Z_n = 1) = P(Z_n = -1) = \frac{1}{2}$.
+
+![[Pasted image 20240312091108.png]]
+- [Eight different random walks - Wikipedia](https://en.m.wikipedia.org/wiki/File:Random_Walk_example.svg)
+
+Effectively, when we consider the discrete case, we call it a random walk. But as we keep reducing our time-steps, that is, $\Delta t \to 0$, it's the same as Brownian motion. The summation formula is the mean by definition, so we can write $Z_k = \pm\frac{t}{n}$, where $n$ is the number of time steps. For convenience, let us write $Z_k = \pm \sqrt \frac{t}{n}$. 
+### EXPECTATION
+The expectation of $Z_k$, $\mathbb{E}[Z_k] = 0 \iff \mathbb{E}[X_n] = 0$. The expectation, $\mathbb{E}[Z_k^2] = \frac{t}{n}$. Now when working with expected values, due to [[LINEARITY OF EXPECTATION]], $\mathbb{E}[Z_i Z_j] = \mathbb{E}[Z_i] \cdot \mathbb{E}[Z_j] = 0$ . 
+$$
+\begin{align}
+& \mathbb{E}[X_n^2] = \mathbb{E}[(\sum Z_k)^2] \\
+& = \mathbb{E}[(Z_1 + Z_2 + \cdots + Z_n)(Z_1 + Z_2 + \cdots + Z_n)] \\
+& = \mathbb{E}[Z_1^2 + Z_1Z_2 + \cdots + Z_1Z_n + Z_2Z_1 + \cdots + Z_2Z_n + \cdots + Z_nZ_1 + Z_nZ_2+\cdots+Z_n^2] \ | \text{Since } \mathbb{E}[Z_iZ_j] = 0 \text{ for } i \neq j \\
+& = \mathbb{E}[\sum Z_k^2] \\
+& = \mathbb{E}[Z_1^2] + \mathbb{E}[Z_2^2] + \cdots + \mathbb{E}[Z_n^2] \\ 
+& = \frac{t}{n} + \frac{t}{n} + \cdots + \frac{t}{n} \\ 
+& \implies \mathbb{E}[X_n^2] =  t
+\end{align}
+$$
+The important property here is that this expectation is completely independent of $n$. No matter how many time steps we take, the expectation is just $t$. To go from the discrete case to the continuous case, we can indicate the size of time-steps going to 0 as $n \to \infty$. Because $\mathbb{E}[X_n] = 0$ and $\mathbb{E}[X_n^2] = t$ (both are independent of $n$), we know that the exact same expectations apply to the Brownian Motion case as well. 
+As $n \to \infty$, our random walk becomes Brownian Motion. Therefore, we get:
+$$
+\begin{align}
+& \mathbb{E}[B_t] = 0 \\
+& \mathbb{E}[B_t^2] = t
+\end{align}
+$$
+- **Brownian Motion is bounded**. This just says that, in the context of share prices, a share price cannot go to $\infty$. 
+- **Brownian Motion is a Markov process**. This follows from the definition. 
+- **Brownian Motion is a Martingale**. This is sort of like saying, *the best guess for what happens next (in the future), is what's happening now*. More formally, $\mathbb{E}[Z_{t+1}|Z_t] = Z_t$. Kind of paradoxical. 
+## GEOMETRIC BROWNIAN MOTION
+Remember that in Bachelier's Thesis, he modeled share prices using a standard normal distribution. But looking at share prices almost immediately indicates an issue with his model. We notice that over time, stocks tend to *drift* in one direction or the other, with total markets having an overall upwards drift. This is sort of like having the normal distribution have it's mean drifted up from 0. This is the idea that we want to model using geometric Brownian motion. 
+
+We sort of expect share prices to grow in an exponential manner. We mathematically write this as $S_t = S_0e^{\alpha t}$. Just the formula to denote standard exponential growth. But we know that share prices follow Brownian motion (random walk), and the price keeps constantly fluctuating. Effectively, we need to introduce a parameter in this equation to account for the Brownian motion. So to take this into account, we can do this by modifying the model slightly to $S_t = S_0 e^{\alpha t + \beta B_t}$. The term $\beta B_t$ accounts for the Brownian motion. $\beta$ is a constant, which is very difficult to measure for a stock. The term is essentially supposed to be a measure of volatility. You can see that with higher $\beta$, you have more contribution from the Brownian motion term and hence have more random volatility. 
+
+![[Pasted image 20240312094517.png]]
+
+If we play around with the formula a bit, we can do the following:
+$$
+\begin{align}
+& \frac{S_t}{S_0} = e^{\alpha t + \beta B_t} \\
+& \ln(\frac{S_t}{S_0}) = \alpha t + \beta B_t \quad \text{You can think of the } \alpha t \text{ term as contributing to the mean and } \beta B_t \text{ as a normal distribution with mean } 0\\
+& \text{Since, } B_t \sim N(0, t) \\
+& \alpha t + \beta B_t \text{ is normally distributed, but we want to know it's mean and variance} \\
+& \alpha t + \beta B_t \sim N(\alpha t, \beta^2t) \quad | \text{ Since } Var(x) = a \implies Var(kx) = k^2a\\
+& \implies \ln(\frac{S_t}{S_0}) \sim N(\alpha t, \beta^2 t)
+\end{align}
+$$
+This is what is known as log-normal. In other words, the ratio of the share prices at time $t$ to the share price at the beginning is a log-normal distribution. The log part essentially just skews the curve. 
+![[Pasted image 20240312095342.png]]
+- [Log-Normal Distribution: Definition, Uses, and How To Calculate - Investopedia](https://www.investopedia.com/terms/l/log-normal-distribution.asp)
+# PHASE 2 - THE BLACK-SCHOLES-MERTON EQUATION
+Thorpe wasn't satisfied with Bachelier's model for pricing options. For one thing, stock prices aren't entirely random. They can increase over time if the business is doing well or fall if it isn't. Bachelier's model ignores this. So Thorpe came up with a more accurate model for pricing options, which took this drift into account. He used his model to gain an edge in the market and make a lot of money. Black-Scholes and Merton later independently came up with a way to price future contracts that would then revolutionize the trading industry forever. Their equation, like Thorpe's, was an improved version of Bachelier's model. 
+
+## DYNAMIC HEDGING
+### A TOY EXAMPLE
+Let's say Bharat sells Arya a call option on a stock, and let's say the stock price has gone up. So it's now in the money for Arya. For every additional rupee that the stock price goes up from the strike price, Bharat will now lose a rupee. **BUT**, he can eliminate this risk by owning 1 unit of stock. He would lose 1 rupee from the option, but gain that rupee back from the stock. And if the stock drops below the strike price, making the option go out of the money for Arya, he can just sell the stock at the strike price so he doesn't risk losing any money from that either. This is the idea behind dynamic hedging.
+
+### A HEDGED PORTFOLIO
+A hedged portfolio, at any one time, will offset an option $V$ with some amount ($\Delta$) of stock $S$.  Let $\Pi$ represent the portfolio, we have $\Pi = V - \Delta S$. It basically means you can sell something without taking the opposite side of the trade. You have a no-risk trade you could make profit from. However, this isn't very practical because the amount of stock to hold $\Delta$, changes based on current stock prices.
+
+## DERIVING BLACK-SCHOLES-MERTON
+We're essentially constructing a portfolio of a single option $V$, and a certain number of shares $\Delta$ of $S$ that we're going to sell against the option to dynamically hedge against it. So the value of our portfolio is essentially $\Pi = V(S, t) - \Delta S$. We're interested in tracking the time evolution of our portfolio. This is difficult because again, the future cash-flow of our option is not easy to price in. So we use the principles from Brownian motion to essentially model the underlying asset as a stochastic process that follows geometric Brownian motion.  
+$$
+\begin{align}
+& \Pi = V(S, t) - \Delta S \\
+& d\Pi = dV - \Delta dS \quad | \ \text{Modelling } dS \text{ using Geometric Brownian Motion,}\\
+& dS = \mu Sdt + \sigma S dW \quad | \ \text{The first term accounts for drift. The second term accounts for volatility.}\\
+& \text{You can then apply Ito's Lemma to get: } \\
+& dV = \frac{\partial V}{\partial t}dt + \frac{\partial V}{\partial S}dS + \frac{1}{2}\frac{\partial^2 V}{\partial S^2}dS^2 \\
+& dV = \frac{\partial V}{\partial t}dt + \frac{\partial V}{\partial S}dS + \frac{1}{2} \sigma^2S^2\frac{\partial^2V}{\partial S^2}dt \\ 
+& \text{Substituting this back into the original portfolio formula,} \\
+& d\Pi = (\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2S^2\frac{\partial^2V}{\partial S^2})dt + (\frac{\partial V}{\partial S} - \Delta) dS \\
+& \text{If we take } \Delta = \frac{\partial V}{\partial S} \text{ as the hedge,} \\
+& d\Pi = (\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2S^2\frac{\partial^2V}{\partial S^2})dt \\ 
+\end{align}
+$$
+Our portfolio is now just a  $dt$ term which means that the portfolio is now deterministic, and as such, doesn't carry any risk. A risk-free portfolio should yield a risk-free rate ($r$), which let's us write a different equation for $d\Pi$. 
+$$
+\begin{align}
+& d\Pi = r\Pi dt = (V - rS\frac{\partial V}{\partial S})dt \\
+& \text{By equating this to our previous formula, and re-grouping terms, we get the famous equation:} \\
+& \frac{\partial V}{\partial t} + rS\frac{\partial V}{\partial S} + \frac{1}{2}\sigma^2S^2\frac{\partial^2V}{\partial S^2}-rV = 0
+\end{align}
+$$
+The risk-free rate in the Black-Scholes formula represents the **theoretical return on an investment with no risk of default**. For example, government-bonds. 
+
+We can now set $V$ equal to a call option or a put option and then solve the differential equation to get a closed-form equation for the price of a call-option given:
+$$
+\begin{align}
+& C = \text{call option price} \\
+& N = \text{cumulative distribution function of the normal distribution} \\
+& S_t = \text{spot price of an asset} \\
+& K = \text{strike price} \\
+& r = \text{risk-free rate} \\
+& t = \text{time to maturity} \\
+& \sigma = \text{volatility of asset} \\
+& \\
+& C = N(d_1)S_t - N(d_2)Ke^{-rt} \\ 
+& \text{where } d_1 = \frac{\ln(\frac{S_t}{K}) + (r + \frac{\sigma^2}{2})t}{\sigma\sqrt t} \\
+& \text{and } d_2 = d_1 - \sigma\sqrt t
+\end{align}
+$$
+
+
+Resources referred to:
+1. [The Trillion Dollar Equation](https://www.youtube.com/watch?v=A5w-dEgIU1M&t=148s)
+2. [Bachelier Model Call Option Price Derivation](https://www.youtube.com/watch?v=J1sBj9K-BhE)
+3. [BROWNIAN MOTION - Galton UChicago](https://galton.uchicago.edu/~lalley/Courses/313/BrownianMotionCurrent.pdf)
+4. [Geometric Brownian Motion](https://www.youtube.com/watch?v=sIKD1tQryHg&list=PLg5nrpKdkk2BZoZYAg2d6Ma3HZ5p9h35i&index=5)
+5. [The Easiest Way to Derive the Black-Scholes Model](https://www.youtube.com/watch?v=NHvQ5CSSgw0&t=70s)
