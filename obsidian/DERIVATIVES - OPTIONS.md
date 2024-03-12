@@ -71,6 +71,17 @@ Imagine you're a big believer in HDFC Bank's long-term prospects, but you're wor
 	Thankfully, the market remains stable, and HDFC Bank's share price even goes up to ₹2800. In this case, you wouldn't exercise the put option since you can sell your shares at a higher price in the open market. The put option would simply expire, and you would lose the initial premium of ₹5000. But that's a small price to pay for the security the put option provided during those nervous market moments.
 ##### KEY TAKEAWAY
 Options offer a flexible way to hedge your stock portfolio. While they won't completely eliminate risk, they can act as a safety net to minimize your losses in case the stock price takes a tumble. Think of it as setting a stop loss on your stock investments that you know you're guaranteed to bottom out at and you pay the insurance cost upfront. 
+# GOING LONG vs SHORT ON OPTIONS
+## CALL OPTIONS
+### LONG CALL
+Buying a call option grants you the **right, but not the obligation**, to purchase a stock at a specific price (strike price) by a certain date (expiry). You're essentially betting the stock price will rise above the strike price by expiry. It's a **bullish** strategy.
+### SHORT CALL
+Selling a call option obligates you to sell the underlying stock at the strike price by expiry if the buyer exercises the option. You collect a premium upfront for taking on this obligation. This strategy is used when you're **neutral** or **slightly bullish** on the stock price, believing it won't significantly rise above the strike price by expiry. It carries **unlimited potential loss** if the stock price soars.
+## PUT OPTIONS
+### LONG PUT
+Buying a put option grants you the **right, but not the obligation**, to sell a stock at a specific price (strike price) by a certain date (expiry). You're essentially betting the stock price will fall below the strike price by expiry. It's a **bearish** strategy.
+### SHORT PUT
+Selling a put option obligates you to buy the underlying stock at the strike price by expiry if the buyer exercises the option. You collect a premium upfront for taking on this obligation. This strategy is used when you're **bullish** on the stock's long-term prospects but believe it might dip in the short term. It offers **limited profit** but protects against a significant price decline (capped at the difference between the strike price and the purchase price).
 # SETTLEMENT METHODS
 This is an exchange specific problem, but different exchanges tackle the method of future / option contract settlement in different ways. The two ways of dealing with this implementation detail are **cash settlement** and **physical delivery**.
 ## CASH SETTLEMENT
