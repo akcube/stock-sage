@@ -1,3 +1,7 @@
+---
+tags:
+  - Finance
+---
 ## Value Based and Policy Based reinforcement learning
 In value based reinforcement learning, the exploration process tries to determine a value function that represents the expected cumulative reward of being in a state. Value based reinforcement learning doesn't have an explicit policy. The policy is implicitly defined by the value function. 
 > The value function can be a state value function or an state-action value function. The difference between the two is the input to the function. The state value function takes a state as input and returns the expected cumulative reward of being in that state. The state-action value function takes a state and an action as input and returns the expected cumulative reward of being in that state and taking that action. They are of the form 

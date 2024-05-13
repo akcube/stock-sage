@@ -1,0 +1,2 @@
+Option Greeks are measures used to quantify the sensitivity of an option's' price to various risk factors. They're pretty similar to physical quantities like velocity and acceleration. Traders primarily use options to gauge the risk-profile of an option position. These four primary Greek risk measures are known as an option's delta, gamma, theta, and vega (or kappa, since vega isn't actually a Greek letter).
+# DELTA
