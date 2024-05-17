@@ -8,7 +8,7 @@ import shutil
 
 ERROR_LOG_FILE = 'error_log.txt'
 
-def fetch_market_data(tickers):
+def fetch_market_data(tickers, interval='1d'):
     '''
     Given a ticker/symbol list of active stocks on the NSE, fetch their price action and volume data since the beginning of time to data/{ticker}.csv
     Default parallelization uses threads = 2*num_cpu_cores. Sometimes fails because of the parallelization.
@@ -16,18 +16,19 @@ def fetch_market_data(tickers):
     :return: A list containing the names of the failed stock tickers
     '''
     failed_downloads=[]
+    print(tickers)
     try:
         # Annoying detail, yf does not throw an error on failure. Just outputs to stdout. 
         # Fix: Mute its output and raise an error ourselves
         output_buffer = StringIO()
         with contextlib.redirect_stdout(output_buffer), contextlib.redirect_stderr(output_buffer):
-            data = yf.download(tickers, period='max', group_by='ticker', prepost=True, actions=True, keepna=False)
+            data = yf.download(tickers, period='max', group_by='ticker', prepost=True, actions=True, keepna=False, interval=interval)
             retry_list = [ticker + ".NS" for ticker in tickers if data[ticker].empty]
-            retry_data = yf.download(retry_list, period='max', group_by='ticker', prepost=True, actions=True, keepna=False)
+            retry_data = yf.download(retry_list, period='max', group_by='ticker', prepost=True, actions=True, keepna=False, interval=interval)
 
         # Store retrieved data to files / log errors
         for ticker in tickers:
-            file_name = f'data/{ticker}.csv'
+            file_name = f'data/{ticker}_{interval}.csv'
             stock_data = data[ticker] if not data[ticker].empty else retry_data[ticker + ".NS"]
             stock_data = stock_data.dropna(subset=stock_data.columns.difference(['Date']), how='all')
             if stock_data.empty:
@@ -53,7 +54,9 @@ def main():
     os.makedirs('data', exist_ok=True)
     if os.path.exists(ERROR_LOG_FILE):
         os.remove(ERROR_LOG_FILE)
-
+    
+    valid_tickers = valid_tickers.head(20)
+    
     # Split the valid tickers into smaller chunks for parallel processing
     chunk_size = 8
     ticker_chunks = [valid_tickers[i:i+chunk_size] for i in range(0, len(valid_tickers), chunk_size)]
@@ -76,4 +79,5 @@ def main():
                     error_file.write(f"Failed to download market data for {ticker}\n")
 
 if __name__ == '__main__':
-    main()
+   #main()
+   print(fetch_market_data(['YESBANK', 'AARTIPHARM', 'NSEI']))
